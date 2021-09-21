@@ -1,21 +1,22 @@
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
 import pyqrcode
 import os
 import cv2
 from tkinter.filedialog import askopenfile
 
-def write_QR(): #function to generate a QR Code
+def write_QR():
     window = Tk()
     window.title("Qr Code Generator")
+    window.configure(bg="#ffffff")
 
-    def clear_subject(): #function to clear the subject entry block
+    def clear_subject():
         subjectEntry.delete(0, END)
 
-    def clear_Filename(): #function to clear the filename entry block
+    def clear_Filename():
         nameEntry.delete(0, END)
 
-    #Code generation
     def generate():
         subject = subjectEntry.get()
         if len(subject) != 0:
@@ -27,7 +28,7 @@ def write_QR(): #function to generate a QR Code
         else:
             messagebox.showerror("Error!", "Please Enter the Subject")
 
-    def save(): #function to save the qr code generated to the QR Codes folder
+    def save():
         generate()
         #folder to save all the codes
         dir = path1 = os.getcwd() + "\\QR Codes"
@@ -49,26 +50,22 @@ def write_QR(): #function to generate a QR Code
                 messagebox.showerror("Error!", "Filename can not be empty!")
         except NameError:
             messagebox.showerror("Error!", "Please Generate the QR Code first")
-    lab1 = Label(window, text="Enter Subject", font=("Helvetica", 12), height = 2)
-    lab1.grid(row = 0, column = 0,pady = 10, padx = 10, sticky = N+S+E+W)
+            
+    ttk.Label(window, text="Enter Subject", font=("Helvetica", 12)).grid(row = 0, column = 0,pady = 10, padx = 10, sticky = N+S+E+W)
 
-    lab2 = Label(window, text="Enter File Name", font=("Helvetica", 12), height = 2)
-    lab2.grid(row = 1, column = 0,pady = 10, padx = 10,  sticky = N+S+E+W)
+    ttk.Label(window, text="Enter File Name", font=("Helvetica", 12)).grid(row = 1, column = 0,pady = 10, padx = 10,  sticky = N+S+E+W)
 
-    subjectEntry = Entry(window, font=("Helvetica", 12))
+    subjectEntry = ttk.Entry(window, font=("Helvetica", 12))
     subjectEntry.grid(row = 0, column = 1,pady = 10, padx = 10,  sticky = N+S+E+W)
 
-    nameEntry = Entry(window, font=("Helvetica", 12))
+    nameEntry = ttk.Entry(window, font=("Helvetica", 12))
     nameEntry.grid(row = 1, column = 1, pady = 10, padx = 10, sticky=N+S+E+W)
 
-    clear_sub = Button(window, text="Clear Subject", width = 15, height = 2, command = clear_subject)
-    clear_sub.grid(row = 0, column = 2, pady = 10, padx = 10)
+    ttk.Button(window, text="Clear Subject", width = 15, command = clear_subject).grid(row = 0, column = 2, pady = 10, padx = 10)
 
-    clear_file = Button(window, text="Clear Filename", width = 15, height = 2, command = clear_Filename)
-    clear_file.grid(row = 1, column = 2, pady = 10, padx = 10)
+    ttk.Button(window, text="Clear Filename", width = 15, command = clear_Filename).grid(row = 1, column = 2, pady = 10, padx = 10)
 
-    showButton = Button(window, text = "Generate QR & save as PNG", height = 2, font = ("Helvetica", 12), width = 15, command = save)
-    showButton.grid(row = 2, column = 0,pady = 10, padx = 10, columnspan = 3,  sticky = N+S+E+W)
+    ttk.Button(window, text = "Generate QR & save as PNG", width = 15, command = save).grid(row = 2, column = 0,pady = 10, padx = 10, columnspan = 3,  sticky = N+S+E+W)
 
     #Making a responsive layout:
     totalRows = 2
@@ -79,18 +76,20 @@ def write_QR(): #function to generate a QR Code
     for col in range(totalCols+1):
         window.grid_columnconfigure(col, weight=1)
         
-    #looping GUI
     window.mainloop()
     
-def read_QR(): #function to read a QR Code
+def read_QR():
     read = Tk()
     read.title("Read QR")
-    ask = Label(read, text = "Select the Image", font=("Helvetica", 12))
-    file = Entry(read, width = 50)
-    name = Label(read, text = "Enter File name", font=("Helvetica", 12))
-    name_entry = Entry(read, width = 50)
+    read.configure(bg="#ffffff")
+    s = ttk.Style()
+    s.configure('TLabel', bg="#ffffff")
+    ttk.Label(read, text = "Select the Image", style="TLabel", font=("Helvetica", 12)).grid(row = 0, column = 0, pady = 10, padx = 10)
+    file = ttk.Entry(read, width = 50)
+    ttk.Label(read, text = "Enter File name", style="TLabel", font=("Helvetica", 12)).grid(row = 1, column = 0, pady = 10, padx = 10)
+    name_entry = ttk.Entry(read, width = 50)
 
-    def clear(): #function to clear the entry block and also the previous data displayed.
+    def clear():
         global result
         name_entry.delete(0, END)
         file.delete(0, END)
@@ -98,14 +97,12 @@ def read_QR(): #function to read a QR Code
             result.grid_forget()
         except NameError:
             pass
-        
-    def open_image(): #function to browse to the directory the image is located and open it
+    def open_image():
         file.delete(0, END)
         file_name = askopenfile(filetypes = [('png files', '*.png'), ('jpg files', '*.jpg')])
         if file_name is not None:
             file.insert(0, file_name.name)
-            
-    def read_now(): #function to read the qr code image selected.
+    def read_now():
         try:
             global data, result
             try:
@@ -125,8 +122,7 @@ def read_QR(): #function to read a QR Code
                 result.grid(row = 3, column = 0, columnspan = 2)
         except:
             messagebox.showerror("Invalid Image", "Please select a valid image to read data From")
-
-    def save(): #function to save the data extracted to a txt file
+    def save():
         global data
         #folder to save all the codes
         dir = path1 = os.getcwd() + "\\QR Codes"
@@ -154,18 +150,12 @@ def read_QR(): #function to read a QR Code
         except NameError:
             messagebox.showerror("Data not found", "Please Extract data From QR Code first")
 
-    browse = Button(read, text='Browse Image', width = 15, command = open_image)
-    btn = Button(read, text = "Read", width = 15, height = 2, command = read_now)
-    save_btn = Button(read, text = "Save", width = 15, command = save)
-    clear_btn = Button(read, text = "Clear", width = 15, command = clear)
-    browse.grid(row = 0, column = 2, pady = 10, padx = 10)
-    ask.grid(row = 0, column = 0, pady = 10, padx = 10)
-    name.grid(row = 1, column = 0, pady = 10, padx = 10)
+    ttk.Button(read, text='Browse Image', width = 15, command = open_image).grid(row = 0, column = 2, pady = 10, padx = 10)
+    ttk.Button(read, text = "Read", width = 15, command = read_now).grid(row = 2, column = 1, pady = 10, padx = 10)
+    ttk.Button(read, text = "Save", width = 15, command = save).grid(row = 1, column = 2, pady = 10, padx = 10)
+    ttk.Button(read, text = "Clear", width = 15, command = clear).grid(row = 2, column = 0, pady = 10, padx = 10)
     file.grid(row = 0, column = 1, pady = 10, padx = 10)
     name_entry.grid(row = 1, column = 1, pady = 10, padx = 10)
-    save_btn.grid(row = 1, column = 2, pady = 10, padx = 10)
-    btn.grid(row = 2, column = 1, pady = 10, padx = 10)
-    clear_btn.grid(row = 2, column = 0, pady = 10, padx = 10)
 
     totalRows = 2
     totalCols = 1
@@ -179,12 +169,12 @@ if __name__ == "__main__":
     gui = Tk()
     gui.configure(bg="Black")
     gui.title("QR Code")
-    intro = Label(gui, text = "QR Code", font=("Times", 30), fg = "White", bg = "Black")
-    generate = Button(gui, text = "Generate QR", width = 15, height = 2, activebackground = "light Green", command = write_QR)
-    read = Button(gui, text = "Read QR", width = 15, height = 2, activebackground = "light blue", command = read_QR)
-    intro.grid(row = 0, column = 0, columnspan = 2)
-    generate.grid(row = 1, column = 0, pady = 10, padx = 10)
-    read.grid(row = 1, column = 1, pady = 10, padx = 10)
+    gui.configure(bg="#ffffff")
+    s = ttk.Style()
+    s.configure('TLabel', background='#ffffff')
+    ttk.Label(gui, text = "QR Code", font=("Times", 30), style="TLabel").grid(row = 0, column = 0, columnspan = 2)
+    generate = ttk.Button(gui, text = "Generate QR", width = 15, command = write_QR).grid(row = 1, column = 0, pady = 10, padx = 10)
+    read = ttk.Button(gui, text = "Read QR", width = 15, command = read_QR).grid(row = 1, column = 1, pady = 10, padx = 10)
     totalRows = 1
     totalCols = 1
     for row in range(totalRows + 1):
